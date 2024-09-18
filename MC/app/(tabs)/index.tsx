@@ -1,12 +1,16 @@
-import { Image, Platform, StyleSheet } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 
+import CustomSearchBar from '@/components/CustomSearchBar';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { SearchBarDefault } from '@rneui/base/dist/SearchBar/SearchBar-default';
 
 export default function HomeScreen() {
+  const handleSearch = (query) => {
+    console.log('Searching for:', query);
+    // Aquí podrías implementar la lógica de búsqueda (por ejemplo, filtrar productos o medicamentos).
+  };
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#FFF', dark: '#000' }}
@@ -19,23 +23,6 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
@@ -52,7 +39,7 @@ export default function HomeScreen() {
         <ThemedText>
           
         </ThemedText>
-        <SearchBarDefault style={styles.searchBar}/>
+        <CustomSearchBar placeholder={'Search...'} onSearch={handleSearch} />
       </ThemedView>
     </ParallaxScrollView>
   );

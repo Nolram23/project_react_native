@@ -8,6 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/ThemedView';
+import { Stack } from 'expo-router';
+import { NativeSearchBar } from 'react-native-screens';
+import { ThemedText } from './ThemedText';
 
 const HEADER_HEIGHT = 250;
 
@@ -44,6 +47,11 @@ export default function ParallaxScrollView({
 
   return (
     <ThemedView style={styles.container}>
+      <Stack.Screen options={{
+        headerTransparent: true,
+        headerLeft: () => <ThemedText>Back</ThemedText>,
+        headerBackground: () => <Animated.View style={[styles.header1]}/>,
+      }}/>
       <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
         <Animated.View
           style={[
@@ -53,6 +61,7 @@ export default function ParallaxScrollView({
           ]}>
           {headerImage}
         </Animated.View>
+        <NativeSearchBar/>
         <ThemedView style={styles.content}>{children}</ThemedView>
       </Animated.ScrollView>
     </ThemedView>
@@ -67,7 +76,12 @@ const styles = StyleSheet.create({
     height: 250,
     overflow: 'hidden',
   },
+  header1:{
+    backgroundColor: '#FFF',
+    height: 100,
+  },
   content: {
+    height: 2000,
     flex: 1,
     padding: 32,
     gap: 16,

@@ -6,68 +6,57 @@ import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useEffect, useState } from 'react';
 
 export default function TabTwoScreen() {
+
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  
+  useEffect(() => {
+    fetchData("https://randomuser.me/api/?results=20");
+  }, []);
+
+const fetchData = async (url: string | URL | Request) => {
+    try {
+      const response = await fetch(url);
+      const json = await response.json();
+      setData(json.results);
+      setFilteredData(json.results);
+      console.log(json.results);
+      
+    }catch(error){
+      console.log(error);
+      
+    }
+};
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
+      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}
+    
+      >
+      <ThemedView style={styles.textMedicine}>
+        <ThemedText type="title">Friends</ThemedText>
+      </ThemedView>
+      <ThemedView>
+        {
+          filteredData.map((item, index) => {
+            return (
+              <ThemedView key={index} style= {styles.itemContainer} >
+                <Image
+                  source={{uri: item.picture.large}}
+                  style = {styles.image}/>
+                <ThemedView>
+                  <ThemedText style={styles.textName}>{item.name.first} {item.name.last}</ThemedText>
+                  <ThemedText style={styles.textUsername}>{item.login.username}</ThemedText>
+                </ThemedView>
+              </ThemedView>
+            )
+          })
+        }
       </ThemedView>
       <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
       <Collapsible title="Animations">
         <ThemedText>
           This template includes an example of an animated component. The{' '}
@@ -75,6 +64,9 @@ export default function TabTwoScreen() {
           the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
           to create a waving hand animation.
         </ThemedText>
+        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
+          <ThemedText type="link">Learn more</ThemedText>
+        </ExternalLink>
         {Platform.select({
           ios: (
             <ThemedText>
@@ -99,4 +91,33 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
+  textMedicine: {
+    fontSize: 20,
+    textAlign: 'left',
+    marginLeft: 10,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  }
+,
+textName: {
+  fontSize: 17,
+  marginLeft: 10,
+  fontWeight: '600',
+},
+textUsername: {
+  fontSize: 14,
+  marginLeft: 10,
+  color: 'grey',
+},
 });
