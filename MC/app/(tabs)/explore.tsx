@@ -2,6 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image, Platform, StyleSheet } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
+import CustomSearchBar from '@/components/CustomSearchBar';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -16,6 +17,35 @@ export default function TabTwoScreen() {
   useEffect(() => {
     fetchData("https://randomuser.me/api/?results=20");
   }, []);
+
+const handleSearch = (query: any) => {
+  searchFilterFunction(query);
+};
+
+const searchFilterFunction = (text) => {
+  if (text) {
+    const newData = data.filter(item => {
+      // Convertir las tres propiedades en mayúsculas (o una cadena vacía si no existen)
+      const firstName = item?.name?.first ? item.name.first.toUpperCase() : '';
+      const lastName = item?.name?.last ? item.name.last.toUpperCase() : '';
+      const itemId = item?.phone ? item.phone.toString().toUpperCase() : '';
+
+      // Convertir el texto de búsqueda en mayúsculas
+      const textData = text.toUpperCase();
+
+      // Verificar si el texto de búsqueda aparece en cualquiera de las tres propiedades
+      return (
+        firstName.indexOf(textData) > -1 ||
+        lastName.indexOf(textData) > -1 ||
+        itemId.indexOf(textData) > -1
+      );
+    });
+
+    setFilteredData(newData); // Actualiza los datos filtrados
+  } else {
+    setFilteredData(data); // Si no hay texto, muestra todos los datos
+  }
+};
 
 const fetchData = async (url: string | URL | Request) => {
     try {
@@ -38,6 +68,7 @@ const fetchData = async (url: string | URL | Request) => {
       >
       <ThemedView style={styles.textMedicine}>
         <ThemedText type="title">Friends</ThemedText>
+        <CustomSearchBar placeholder={'Search...'} onSearch={handleSearch} />
       </ThemedView>
       <ThemedView>
         {
