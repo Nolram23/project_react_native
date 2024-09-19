@@ -22,16 +22,19 @@ const handleSearch = (query: any) => {
   searchFilterFunction(query);
 };
 
-const searchFilterFunction = (text) => {
+const searchFilterFunction = (text: string) => {
   if (text) {
-    const newData = data.filter(item => {
-      // Convertir las tres propiedades en mayúsculas (o una cadena vacía si no existen)
-      const firstName = item?.name?.first ? item.name.first.toUpperCase() : '';
-      const lastName = item?.name?.last ? item.name.last.toUpperCase() : '';
-      const itemId = item?.phone ? item.phone.toString().toUpperCase() : '';
+    // Normalizar el texto de búsqueda para eliminar tildes y caracteres especiales
+    const normalizeText = (str: string) => 
+      str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
-      // Convertir el texto de búsqueda en mayúsculas
-      const textData = text.toUpperCase();
+    const textData = normalizeText(text); // Normalizar texto de búsqueda
+
+    const newData = data.filter(item => {
+      // Normalizar las tres propiedades: first name, last name, y id
+      const firstName = item?.name?.first ? normalizeText(item.name.first) : '';
+      const lastName = item?.name?.last ? normalizeText(item.name.last) : '';
+      const itemId = item?.id ? normalizeText(item.id.toString()) : '';
 
       // Verificar si el texto de búsqueda aparece en cualquiera de las tres propiedades
       return (
