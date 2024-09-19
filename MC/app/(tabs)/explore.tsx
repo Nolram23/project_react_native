@@ -22,24 +22,25 @@ const handleSearch = (query: any) => {
   searchFilterFunction(query);
 };
 
-const searchFilterFunction = (text: string) => {
+const searchFilterFunction = (text) => {
   if (text) {
-    // Normalizar el texto de búsqueda para eliminar tildes y caracteres especiales
-    const normalizeText = (str: string) => 
+    // Función para normalizar y eliminar tildes y caracteres especiales
+    const normalizeText = (str) => 
       str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
     const textData = normalizeText(text); // Normalizar texto de búsqueda
 
     const newData = data.filter(item => {
-      // Normalizar las tres propiedades: first name, last name, y id
-      const firstName = item?.name?.first ? normalizeText(item.name.first) : '';
-      const lastName = item?.name?.last ? normalizeText(item.name.last) : '';
+      // Concatenar first name y last name y luego normalizar
+      const fullName = `${item?.name?.first || ''} ${item?.name?.last || ''}`.trim();
+      const normalizedFullName = normalizeText(fullName);
+
+      // Normalizar el ID también
       const itemId = item?.id ? normalizeText(item.id.toString()) : '';
 
-      // Verificar si el texto de búsqueda aparece en cualquiera de las tres propiedades
+      // Verificar si el texto de búsqueda aparece en el nombre completo o en el ID
       return (
-        firstName.indexOf(textData) > -1 ||
-        lastName.indexOf(textData) > -1 ||
+        normalizedFullName.indexOf(textData) > -1 ||
         itemId.indexOf(textData) > -1
       );
     });
